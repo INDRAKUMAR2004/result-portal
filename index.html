@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Result Checker</h2>
+        <label for="registrationNumber">Registration Number:</label>
+        <input type="text" id="registrationNumber" placeholder="Enter registration number">
+
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob">
+
+        <button onclick="checkResult()">Check Result</button>
+
+        <div id="result"></div>
+    </div>
+    <style >body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    text-align: center;
+}
+
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #4caf50;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+#result {
+    margin-top: 20px;
+    font-weight: bold;
+    color: #333;
+}</style>
+    <script src="script.js">function checkResult() {
+    var registrationNumber = document.getElementById("registrationNumber").value;
+    var dob = document.getElementById("dob").value;
+
+    fetch('/checkResult', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            registrationNumber: registrationNumber,
+            dob: dob
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("result").innerHTML = "Result: " + data.result;
+    });
+}
+const express = require('express');
+const bodyParser = require('body-parser');
+const path = require('path');
+
+const app = express();
+const port = 3000;
+
+// In-memory database (replace this with a real database)
+const resultsDatabase = {};
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.post('/checkResult', (req, res) => {
+    const registrationNumber = req.body.registrationNumber;
+    const dob = req.body.dob;
+
+    // Perform result checking logic here
+    // For simplicity, let's assume a pass/fail result
+    const result = Math.random() < 0.8 ? 'Pass' : 'Fail';
+
+    // Save the result in the database (in-memory in this case)
+    resultsDatabase[registrationNumber] = {
+        dob: dob,
+        result: result
+    };
+
+    // Send the result to the client
+    res.json({ result: result });
+});
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+});</script>
+</body>
+</html>
