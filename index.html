@@ -65,62 +65,6 @@ button:hover {
     font-weight: bold;
     color: #333;
 }</style>
-    <script src="script.js">function checkResult() {
-    var registrationNumber = document.getElementById("registrationNumber").value;
-    var dob = document.getElementById("dob").value;
-
-    fetch('/checkResult', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            registrationNumber: registrationNumber,
-            dob: dob
-        }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        document.getElementById("result").innerHTML = "Result: " + data.result;
-    });
-}
-const express = require('express');
-const bodyParser = require('body-parser');
-const path = require('path');
-
-const app = express();
-const port = 3000;
-
-// In-memory database (replace this with a real database)
-const resultsDatabase = {};
-
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-app.post('/checkResult', (req, res) => {
-    const registrationNumber = req.body.registrationNumber;
-    const dob = req.body.dob;
-
-    // Perform result checking logic here
-    // For simplicity, let's assume a pass/fail result
-    const result = Math.random() < 0.8 ? 'Pass' : 'Fail';
-
-    // Save the result in the database (in-memory in this case)
-    resultsDatabase[registrationNumber] = {
-        dob: dob,
-        result: result
-    };
-
-    // Send the result to the client
-    res.json({ result: result });
-});
-
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
-
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});</script>
+    
 </body>
 </html>
